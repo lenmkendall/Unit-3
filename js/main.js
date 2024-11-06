@@ -5,8 +5,8 @@ window.onload = setMap();
 function setMap() {
     //use Promise.all to parallelize asynchronous data loading
     var promises = [d3.csv("data/unitsData.csv"),
-                    d3.json("data/EuropeCountries.json"),
-                    d3.json("data/FranceRegions.json")
+                    d3.json("data/EuropeCountries.topojson.json"),
+                    d3.json("data/FranceRegions.topojson.json")
                     ];
 
             Promise.all(promises).then(callback);
@@ -18,5 +18,13 @@ function setMap() {
             console.log(csvData);
             console.log(europe);
             console.log(france);
-            }
+
+            //translate europe TopoJSON
+            var europeCountries = topojson.feature(europe, europe.objects.EuropeCountries),
+                franceRegions = topojson.feature(france, france.objects.FranceRegions);
+
+            //examine the results
+            console.log(europeCountries);
+            console.log(franceRegions);
+            };
 }
