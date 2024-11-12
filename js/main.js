@@ -17,11 +17,11 @@ function setMap() {
 
     //create Albers equal area conic projection centered on France
     var projection = d3.geoAlbers()
-        .center([0, 46.2])
-        .rotate([-2, 0, 0])
-        .parallels([43, 62])
-        .scale(2500)
-        .translate([width / 2, height / 2]); 
+        .center([-0.6, 38.7])
+        .rotate([96, 0])
+        .parallels([29.5, 45.5])
+        .scale(925)
+        .translate([480, 250]); 
 
     var path = d3.geoPath()
         .projection(projection);
@@ -30,36 +30,36 @@ function setMap() {
     var promises = [];
         
         promises.push(d3.csv("data/StatePopulation.csv")); //load attributes from csv
-        promises.push(d3.json("data/EuropeCountries.topojson.json")); //load background spatial data
-        promises.push(d3.json("data/FranceRegions.topojson.json")); //load choropleth spatial data
+        promises.push(d3.json("data/Countries.topojson.json")); //load background spatial data
+        promises.push(d3.json("data/States.topojson.json")); //load choropleth spatial data
 
-            Promise.all(promises).then(callback);
+        Promise.all(promises).then(callback);
 
             function callback(data) {
                 var csvData = data[0],
-                europe = data[1], 
-                france = data[2]; 
+                worldCountries = data[1], 
+                worldStates = data[2]; 
             console.log(csvData);
-            console.log(europe);
-            console.log(france);
+            console.log(worldCountries);
+            console.log(worldStates);
 
-            //translate europe TopoJSON
-            var europeCountries = topojson.feature(europe, europe.objects.EuropeCountries),
-                franceRegions = topojson.feature(france, france.objects.FranceRegions);
+            //translate worldcountries TopoJSON
+            var naCountries = topojson.feature(worldCountries, worldCountries.objects.Countries),
+                usaStates = topojson.feature(worldStates, worldStates.objects.States).features;
 
-            //add Europe Countries to map
+            //add Countries to map
             var countries = map.append("path")
-                .datum(europeCountries)
+                .datum(naCountries)
                 .attr("class", "countries")
                 .attr("d", path);
 
-            //add France regions to map
-            var regions = map.selectAll(".regions")
-                .data(franceRegions)
+            //add stats regions to map
+            var states = map.selectAll(".name")
+                .data(usaStates)
                 .enter()
                 .append("path")
                 .attr("class", function(d) {
-                    return "regions " + d.properties.adm1_code;
+                    return "states " + d.properties.adm1_code;
                 })
                 .attr("d", path);
 
