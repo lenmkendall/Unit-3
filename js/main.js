@@ -1,70 +1,256 @@
-//begin script when window loads
-window.onload = setMap(); 
+//wrap everything in a self-executing anonymous function to move to local scope
+(function() {
 
-//set up choropleth map
-function setMap() {
+    //pseudo-global variables
+    var attrArray = ["total_pop", "pop_over65"]; //list of attributes
+    var expressed = attrArray[0]; //initial attribute
+
+    //begin script when window loads
+    window.onload = setMap(); 
+
+    //set up choropleth map
+    function setMap() {
     
-    //map frame dimensions
-    var width = 960,
-        height = 460;
+        //map frame dimensions
+        var width = window.innerWidth * 0.5,
+            height = 460;
 
-    //create new svg container for the map
-    var map = d3.select("body")
-        .append("svg")
-        .attr("class", "map")
-        .attr("width", width)
-        .attr("height", height)
+        //create new svg container for the map
+        var map = d3.select("body")
+            .append("svg")
+            .attr("class", "map")
+            .attr("width", width)
+            .attr("height", height)
 
-    //create Albers equal area conic projection centered on France
-    var projection = d3.geoAlbers()
-        .center([-0.6, 38.7])
-        .rotate([96, 0])
-        .parallels([29.5, 45.5])
-        .scale(925)
-        .translate([480, 250]); 
+        //create Albers equal area conic projection centered on France
+        var projection = d3.geoAlbers()
+            .center([-0.6, 38.7])
+            .rotate([92, 0])
+            .parallels([29.5, 45.5])
+            .scale(925)
+            .translate([480, 250]); 
 
-    var path = d3.geoPath()
-        .projection(projection);
+        var path = d3.geoPath()
+            .projection(projection);
     
-    //use Promise.all to parallelize asynchronous data loading
-    var promises = [];
+        //use Promise.all to parallelize asynchronous data loading
+        var promises = [];
         
-        promises.push(d3.csv("data/StatePopulation.csv")); //load attributes from csv
-        promises.push(d3.json("data/Countries.topojson.json")); //load background spatial data
-        promises.push(d3.json("data/States.topojson.json")); //load choropleth spatial data
+            promises.push(d3.csv("data/StatePopulation.csv")); //load attributes from csv
+            promises.push(d3.json("data/Countries.topojson.json")); //load background spatial data
+            promises.push(d3.json("data/States.topojson.json")); //load choropleth spatial data
 
-        Promise.all(promises).then(callback);
+            Promise.all(promises).then(callback);
 
-            function callback(data) {
-                var csvData = data[0],
-                worldCountries = data[1], 
-                worldStates = data[2]; 
-            console.log(csvData);
-            console.log(worldCountries);
-            console.log(worldStates);
+                function callback(data) {
+                    var csvData = data[0], worldCountries = data[1], worldStates = data[2]; 
+                
+                //console.log(csvData);
+                //console.log(worldCountries);
+                //console.log(worldStates);
 
-            //translate worldcountries TopoJSON
-            var naCountries = topojson.feature(worldCountries, worldCountries.objects.Countries),
-                usaStates = topojson.feature(worldStates, worldStates.objects.States).features;
+                //translate worldcountries TopoJSON
+                var naCountries = topojson.feature(worldCountries, worldCountries.objects.Countries),
+                    usaStates = topojson.feature(worldStates, worldStates.objects.States).features;
 
-            //add Countries to map
-            var countries = map.append("path")
-                .datum(naCountries)
-                .attr("class", "countries")
-                .attr("d", path);
 
+                //add Countries to map
+                var countries = map.append("path")
+                    .datum(naCountries)
+                    .attr("class", "countries")
+                    .attr("d", path);
+
+            //join csv data to GeoJSON enumeration units
+            usaStates = joinData(usaStates, csvData);
+
+            //create the color scale
+            var colorScale = makeColorScale(csvData);
+
+            //add enumeration units to the map
+            setEnumerationUnits(usaStates, map, path, colorScale);
+    
+            //add coordinated visualization to the map
+            setChart(csvData, colorScale);    
+    
+        };
+}; //end of setMap()
+
+
+//function joinData
+function joinData(usaStates, csvData) {
+            //variables for data join
+            var attrArray = ["total_pop", "pop_over65"]; 
+
+            //loop through csv to assign each set of csv attribute values to geojson state
+            for (var i = 0; i < csvData.length; i++) {
+                var csvState = csvData[i]; //the current state
+                var csvKey = csvState.name; //the csv primary key
+
+                //loop through geojson states to find correct region
+                for (var a = 0; a < usaStates.length; a++) {
+
+                    var geojsonProps = usaStates[a].properties; //the current state geojson properties
+
+                    var geojsonKey = geojsonProps.name; //the geojson primary key
+
+                    //where primary keys match, transfer csv data to geojson properties object
+                    if (geojsonKey == csvKey) {
+
+                        //assign all attributes and values
+                        attrArray.forEach(function(attr) {
+                            var val = parseFloat(csvState[attr]); //get csv attribute value
+                            geojsonProps[attr] = val; //assign attribute and value to geojson properties
+                        });
+                    };
+                };
+            };
+        return usaStates;
+    };
+
+//states block 
+function setEnumerationUnits(usaStates, map, path, colorScale) {
             //add stats regions to map
             var states = map.selectAll(".name")
                 .data(usaStates)
                 .enter()
                 .append("path")
                 .attr("class", function(d) {
-                    return "states " + d.properties.adm1_code;
+                    return "states " + d.properties.name;
                 })
-                .attr("d", path);
+                .attr("d", path)
+                .style("fill", function(d) {
+                    var value = d.properties[expressed];
+                    if (value) {
+                        return colorScale(d.properties[expressed]);
+                    } else {
+                        return "#ccc";
+                    }
+                });
 
             //examine the results
-            //console.log(europeCountries);
-            //console.log(franceRegions);
+            //console.log(naCountries);
+            //console.log(usaStates);
             }; 
-}
+
+//function to create color scale generator quantile
+function makeColorScale(data){
+    var colorClasses = [
+        "#D4B9DA",
+        "#C994C7",
+        "#DF65B0",
+        "#DD1C77",
+        "#980043"
+    ];
+
+    //create color scale generator
+    var colorScale = d3.scaleQuantile()
+        .range(colorClasses);
+
+    //build array of all values of the expressed attribute
+    var domainArray = [];
+    for (var i=0; i<data.length; i++){
+        var val = parseFloat(data[i][expressed]);
+        domainArray.push(val);
+    };
+
+    //assign array of expressed values as scale domain
+    colorScale.domain(domainArray);
+
+    return colorScale;
+};
+
+//function to create coordinated bar chart
+function setChart(csvData, colorScale) {
+    //chart frame dimensions
+    var chartWidth = window.innerWidth * 0.425, 
+        chartHeight = 460;
+        
+
+    //create a second svg element to hold the bar chart
+    var chart = d3.select("body")
+        .append("svg")
+        .attr("width", chartWidth)
+        .attr("height", chartHeight)
+        .attr("class", "chart"); 
+        
+    //create a scale to size bars proportionally to frame
+    var yScale = d3.scaleLinear()
+        .range([0, chartHeight])
+        .domain([0,40000000]);
+
+    //set bars for each province
+    var bars = chart.selectAll(".bars")
+        .data(csvData)
+        .enter()
+        .append("rect")
+        .sort(function(a, b) {
+            return b[expressed] - a[expressed]
+        })
+        .attr("class", function(d) {
+            return "bars " + d.name;
+        })
+        .attr("width", chartWidth / csvData.length - 1)
+        .attr("x", function(d, i) {
+            return i * (chartWidth / csvData.length);
+        })
+        .attr("height", function(d) {
+            return yScale(parseFloat(d[expressed]));
+        })
+        .attr("y", function(d) {
+            return chartHeight - yScale(parseFloat(d[expressed]));
+        })
+        .style("fill", function(d) {
+            return colorScale(d[expressed]);
+        });
+
+
+    /*
+    //annotate bars with attribute value text
+    var numbers = chart.selectAll(".numbers")
+        .data(csvData)
+        .enter()
+        .append("text")
+        .sort(function(a, b) {
+            return a[expressed] - b[expressed]
+        })
+        .attr("class", function(d) {
+            return "numbers " + d.name;
+        })
+        .attr("text-anchor", "middle")
+        .attr("x", function(d, i) {
+            var fraction = chartWidth / csvData.length;
+            return i * fraction + (fraction -1) / 2;
+        })
+        .attr("y", function(d) {
+            return chartHeight - yScale(parseFloat(d[expressed])) + 0
+        })
+        .text(function(d) {
+            return (d[expressed] / 1000000 + "M");
+        }); */
+
+    //create a text element for the chart title
+    var charTitle = chart.append("text")
+        .attr("x", 20)
+        .attr("y", 40)
+        .attr("class", "chartTitle")
+        .text("Population in each State");
+
+    //create vertical axis generator
+    var yAxis = d3.axisLeft()
+        .scale(yScale);
+
+    //place axis
+    var axis = chart.append("g")
+        .attr("class", "axis")
+        .attr("transform", translate)
+        .call(yAxis);
+
+    //create frame for chart border
+    var chartFrame = chart.append("rect")
+        .attr("class", "chartFrame")
+        .attr("width", chartInnerWidth)
+        .attr("height", chartInnerHeight)
+        .attr("transform", translate);
+};
+
+})(); //last line of main.js

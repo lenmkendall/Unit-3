@@ -1,4 +1,4 @@
-id,name,nameid,total_pop,pop_over65
+id,name,namelowercase,total_pop,pop_over65
 1,Alabama,alabama,5024279,874000
 2,Alaska,alaska,733391,96000
 3,Arizona,arizona,7151502,"1,374,000"
