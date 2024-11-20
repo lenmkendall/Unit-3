@@ -1,51 +1,51 @@
-id,name,namelowercase,total_pop,pop_over65
-1,Alabama,alabama,5024279,874000
-2,Alaska,alaska,733391,96000
-3,Arizona,arizona,7151502,"1,374,000"
-4,Arkansas,arkansas,3011524,536000
-5,California,california,39538223,"5,976,000"
-6,Colorado,colorado,5773714,876000
-7,Connecticut,connecticut,3605944,646000
-8,Delaware,delaware,989948,198000
-9,Florida,florida,21538187,"4,638,000"
-10,Georgia,georgia,10711908,"1,575,000"
-11,Hawaii,hawaii,1455271,275000
-12,Idaho,idaho,1839106,306000
-13,Illinois,illinois,12812508,"2,089,000"
-14,Indiana,indiana,6785528,"1,115,000"
-15,Iowa,iowa,3190369,566000
-16,Kansas,kansas,2937880,488000
-17,Kentucky,kentucky,4505836,771000
-18,Louisiana,louisiana,4657757,764000
-19,Maine,maine,1362359,294000
-20,Maryland,maryland,6177224,987000
-21,Massachusetts,massachusetts,7029917,"1,198,000"
-22,Michigan,michigan,10077331,"1,812,000"
-23,Minnesota,minnesota,5706494,949000
-24,Mississippi,mississippi,2961279,500000
-25,Missouri,missouri,6154913,"1,090,000"
-26,Montana,montana,1084225,213000
-27,Nebraska,nebraska,1961504,319000
-28,Nevada,nevada,3104614,519000
-29,New Hampshire,newhampshire,1377529,263000
-30,New Jersey,newjersey,9288994,"1,510,000"
-31,New Mexico,newmexico,2117522,390000
-32,New York,newyork,20201249,"3,370,000"
-33,North Carolina,northcarolina,10439388,"1,815,000"
-34,North Dakota,northdakota,779094,123000
-35,Ohio,ohio,11799448,"2,098,000"
-36,Oklahoma,oklahoma,3959353,653000
-37,Oregon,oregon,4237256,790000
-38,Pennsylvania,pennsylvania,13002700,"2,448,000"
-39,Rhode Island,rhodeisland,1097379,192000
-40,South Carolina,southcarolina,5118425,976000
-41,South Dakota,southdakota,886667,157000
-42,Tennessee,tennessee,6910840,"1,181,000"
-43,Texas,texas,29145505,"3,874,000"
-44,Utah,utah,3271616,382000
-45,Vermont,vermont,643077,129000
-46,Virginia,virginia,8631393,"1,401,000"
-47,Washington,washington,7705281,"1,248,000"
-48,West Virginia,westvirginia,1793716,374000
-49,Wisconsin,wisconsin,5893718,"1,048,000"
-50,Wyoming,wyoming,576851,104000
+id,name,nameLabel,total_pop,pop_over65
+1,Alabama,Alabama,5024279,874000
+2,Alaska,Alaska,733391,96000
+3,Arizona,Arizona,7151502,1374000
+4,Arkansas,Arkansas,3011524,536000
+5,California,California,39538223,5976000
+6,Colorado,Colorado,5773714,876000
+7,Connecticut,Connecticut,3605944,646000
+8,Delaware,Delaware,989948,198000
+9,Florida,Florida,21538187,4638000
+10,Georgia,Georgia,10711908,1575000
+11,Hawaii,Hawaii,1455271,275000
+12,Idaho,Idaho,1839106,306000
+13,Illinois,Illinois,12812508,2089000
+14,Indiana,Indiana,6785528,1115000
+15,Iowa,Iowa,3190369,566000
+16,Kansas,Kansas,2937880,488000
+17,Kentucky,Kentucky,4505836,771000
+18,Louisiana,Louisiana,4657757,764000
+19,Maine,Maine,1362359,294000
+20,Maryland,Maryland,6177224,987000
+21,Massachusetts,Massachusetts,7029917,1198000
+22,Michigan,Michigan,10077331,1812000
+23,Minnesota,Minnesota,5706494,949000
+24,Mississippi,Mississippi,2961279,500000
+25,Missouri,Missouri,6154913,1090000
+26,Montana,Montana,1084225,213000
+27,Nebraska,Nebraska,1961504,319000
+28,Nevada,Nevada,3104614,519000
+29,New Hampshire,New Hampshire,1377529,263000
+30,New Jersey,New Jersey,9288994,1510000
+31,New Mexico,New Mexico,2117522,390000
+32,New York,New York,20201249,3370000
+33,North Carolina,North Carolina,10439388,1815000
+34,North Dakota,North Dakota,779094,123000
+35,Ohio,Ohio,11799448,2098000
+36,Oklahoma,Oklahoma,3959353,653000
+37,Oregon,Oregon,4237256,790000
+38,Pennsylvania,Pennsylvania,13002700,2448000
+39,Rhode Island,Rhode Island,1097379,192000
+40,South Carolina,South Carolina,5118425,976000
+41,South Dakota,South Dakota,886667,157000
+42,Tennessee,Tennessee,6910840,1181000
+43,Texas,Texas,29145505,3874000
+44,Utah,Utah,3271616,382000
+45,Vermont,Vermont,643077,129000
+46,Virginia,Virginia,8631393,1401000
+47,Washington,Washington,7705281,1248000
+48,West Virginia,West Virginia,1793716,374000
+49,Wisconsin,Wisconsin,5893718,1048000
+50,Wyoming,Wyoming,576851,104000
